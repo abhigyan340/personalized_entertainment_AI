@@ -353,7 +353,8 @@ function displayRecommendations(recommendations) {
 
     resultsGrid.innerHTML = "";
 
-    recommendations.forEach((movie, index) => {
+    // Fire all enrich calls in parallel — don't wait for each card sequentially
+    const enrichPromises = recommendations.map((movie, index) => {
         const card = document.createElement("article");
         card.className = "movie-card";
 
@@ -442,9 +443,12 @@ function displayRecommendations(recommendations) {
 
         resultsGrid.appendChild(card);
 
-        // Asynchronously enrich this card with poster + direct links
-        enrichCard(index, movie);
+        // Return the enrich promise — all 5 run in parallel
+        return enrichCard(index, movie);
     });
+
+    // All enrich fetches fire simultaneously
+    Promise.all(enrichPromises).catch(() => {});
 }
 
 

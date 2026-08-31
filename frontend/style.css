@@ -1632,3 +1632,23 @@ footer {
 .search-result-thumb.loaded {
     opacity: 1;
 }
+
+/* =========================================================
+   POSTER SKELETON SHIMMER (shows while enrich is loading)
+   ========================================================= */
+
+@keyframes shimmer {
+    0%   { background-position: -600px 0; }
+    100% { background-position:  600px 0; }
+}
+
+.poster-placeholder {
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.04) 25%,
+        rgba(255,255,255,0.09) 50%,
+        rgba(255,255,255,0.04) 75%
+    );
+    background-size: 600px 100%;
+    animation: shimmer 1.6s infinite linear;
+}

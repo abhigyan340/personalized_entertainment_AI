@@ -105,6 +105,9 @@ app.post("/api/recommend", async (req, res) => {
 });
 
 
+// ── Enrich cache (in-memory, keyed by tmdb_id) ───────────
+const enrichCache = new Map();
+
 // ── Enrich ────────────────────────────────────────────────
 // Called by the frontend after cards render.
 // Accepts: { tmdb_id, title, release_year }
@@ -116,77 +119,85 @@ app.get("/api/enrich", async (req, res) => {
         return res.status(400).json({ error: "title is required" });
     }
 
+    // Fallback URLs built from title alone — always returned even if TMDB fails
+    const wikiSlug = String(title).replace(/ /g, "_");
     const result = {
         poster_url: null,
-        imdb_url: null,
-        wikipedia_url: null
+        imdb_url: `https://www.imdb.com/find/?q=${encodeURIComponent(title)}&s=tt`,
+        wikipedia_url: `https://en.wikipedia.org/wiki/${encodeURIComponent(wikiSlug)}`
     };
-
-    // Always set Wikipedia and IMDb fallback from title immediately
-    const wikiSlug = String(title).replace(/ /g, "_");
-    result.wikipedia_url = `https://en.wikipedia.org/wiki/${encodeURIComponent(wikiSlug)}`;
-    result.imdb_url = `https://www.imdb.com/find/?q=${encodeURIComponent(title)}&s=tt`;
 
     if (!TMDB_READ_ACCESS_TOKEN) {
         return res.json(result);
     }
 
+    const cacheKey = tmdb_id ? String(tmdb_id) : title.toLowerCase();
+
+    // Return cached result immediately if available
+    if (enrichCache.has(cacheKey)) {
+        return res.json(enrichCache.get(cacheKey));
+    }
+
     try {
-        // Use TMDB search — proven fastest endpoint on this machine
-        const searchRes = await axios.get(
-            "https://api.themoviedb.org/3/search/movie",
-            {
-                headers: {
-                    Authorization: `Bearer ${TMDB_READ_ACCESS_TOKEN}`,
-                    accept: "application/json"
-                },
-                params: {
-                    query: title,
-                    ...(release_year ? { year: release_year } : {})
-                },
-                timeout: 10000,
-                family: 4
-            }
-        );
-
-        const results = searchRes.data.results || [];
-        const tid = tmdb_id ? Number(tmdb_id) : null;
-        const match = (tid && results.find(r => r.id === tid)) || results[0];
-
-        if (match) {
-            // Poster
-            if (match.poster_path) {
-                result.poster_url = `https://image.tmdb.org/t/p/w500${match.poster_path}`;
-            }
-            // Wikipedia from confirmed TMDB title
-            const confirmedSlug = (match.title || title).replace(/ /g, "_");
-            result.wikipedia_url = `https://en.wikipedia.org/wiki/${encodeURIComponent(confirmedSlug)}`;
-
-            // Fetch external_ids to get the real IMDb tt-id
-            try {
-                const extRes = await axios.get(
-                    `https://api.themoviedb.org/3/movie/${match.id}/external_ids`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${TMDB_READ_ACCESS_TOKEN}`,
-                            accept: "application/json"
-                        },
-                        timeout: 10000,
-                        family: 4
-                    }
-                );
-                if (extRes.data.imdb_id) {
-                    result.imdb_url = `https://www.imdb.com/title/${extRes.data.imdb_id}/`;
+        // Single TMDB call: /movie/{id} returns poster_path + imdb_id together.
+        // Falls back to search if no tmdb_id provided.
+        if (tmdb_id) {
+            const detailRes = await axios.get(
+                `https://api.themoviedb.org/3/movie/${tmdb_id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${TMDB_READ_ACCESS_TOKEN}`,
+                        accept: "application/json"
+                    },
+                    timeout: 10000,
+                    family: 4
                 }
-            } catch (_) {
-                // keep the search-based IMDb fallback already set
+            );
+            const d = detailRes.data;
+
+            if (d.poster_path) {
+                result.poster_url = `https://image.tmdb.org/t/p/w500${d.poster_path}`;
+            }
+            if (d.imdb_id) {
+                result.imdb_url = `https://www.imdb.com/title/${d.imdb_id}/`;
+            }
+            const slug = (d.title || title).replace(/ /g, "_");
+            result.wikipedia_url = `https://en.wikipedia.org/wiki/${encodeURIComponent(slug)}`;
+
+        } else {
+            // No tmdb_id — fall back to search (1 call only)
+            const searchRes = await axios.get(
+                "https://api.themoviedb.org/3/search/movie",
+                {
+                    headers: {
+                        Authorization: `Bearer ${TMDB_READ_ACCESS_TOKEN}`,
+                        accept: "application/json"
+                    },
+                    params: {
+                        query: title,
+                        ...(release_year ? { year: release_year } : {})
+                    },
+                    timeout: 10000,
+                    family: 4
+                }
+            );
+            const match = (searchRes.data.results || [])[0];
+            if (match) {
+                if (match.poster_path) {
+                    result.poster_url = `https://image.tmdb.org/t/p/w500${match.poster_path}`;
+                }
+                const slug = (match.title || title).replace(/ /g, "_");
+                result.wikipedia_url = `https://en.wikipedia.org/wiki/${encodeURIComponent(slug)}`;
+                // No imdb_id from search — keep find fallback
             }
         }
     } catch (err) {
         console.error(`Enrich failed for "${title}":`, err.code || err.message);
-        // fallback URLs are already set above — just return them
+        // fallback URLs already set above
     }
 
+    // Cache and return
+    enrichCache.set(cacheKey, result);
     res.json(result);
 });
 
