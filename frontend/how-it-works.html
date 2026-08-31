@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>How It Works | Personalized Entertainment AI</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* =====================================================
+           HOW IT WORKS PAGE — page-specific styles
+           ===================================================== */
+
+        .hiw-hero {
+            width: min(1100px, 92%);
+            margin: 0 auto;
+            padding: 130px 0 60px;
+            text-align: center;
+        }
+
+        .hiw-hero h1 {
+            font-size: clamp(42px, 6vw, 72px);
+            line-height: 1.05;
+            letter-spacing: -2.5px;
+            margin: 16px 0 24px;
+        }
+
+        .hiw-hero h1 span {
+            display: inline;
+            background: linear-gradient(90deg, #8b5cf6, #c084fc, #60a5fa);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hiw-hero p {
+            max-width: 680px;
+            margin: 0 auto;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 17px;
+            line-height: 1.75;
+        }
+
+        /* ── INTRO BLOCK ── */
+
+        .hiw-intro {
+            width: min(820px, 92%);
+            margin: 0 auto 80px;
+            padding: 36px 44px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .hiw-intro p {
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 16px;
+            line-height: 1.85;
+            margin: 0;
+        }
+
+        /* ── STEPS ── */
+
+        .hiw-steps {
+            width: min(1100px, 92%);
+            margin: 0 auto 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .hiw-step {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 0 36px;
+            padding: 40px 44px;
+            border-radius: 22px;
+            background: linear-gradient(
+                145deg,
+                rgba(255, 255, 255, 0.07),
+                rgba(255, 255, 255, 0.02)
+            );
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            backdrop-filter: blur(14px);
+            transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            animation: cardAppear 0.55s ease forwards;
+            opacity: 0;
+        }
+
+        .hiw-step:hover {
+            border-color: rgba(139, 92, 246, 0.35);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .hiw-step:nth-child(1) { animation-delay: 0.05s; }
+        .hiw-step:nth-child(2) { animation-delay: 0.13s; }
+        .hiw-step:nth-child(3) { animation-delay: 0.21s; }
+
+        .step-number {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 4px;
+        }
+
+        .step-number span {
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(96, 165, 250, 0.15));
+            border: 1px solid rgba(139, 92, 246, 0.35);
+            font-size: 20px;
+            font-weight: 800;
+            color: #c084fc;
+        }
+
+        .step-body h2 {
+            font-size: 22px;
+            letter-spacing: -0.5px;
+            margin: 0 0 14px;
+        }
+
+        .step-body p {
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 15px;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .step-body .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .step-tag {
+            padding: 5px 11px;
+            border-radius: 999px;
+            background: rgba(139, 92, 246, 0.10);
+            border: 1px solid rgba(139, 92, 246, 0.22);
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        /* ── DATASET CALLOUT ── */
+
+        .hiw-callout {
+            width: min(820px, 92%);
+            margin: 0 auto 100px;
+            padding: 32px 44px;
+            border-radius: 20px;
+            background: rgba(139, 92, 246, 0.07);
+            border: 1px solid rgba(139, 92, 246, 0.22);
+        }
+
+        .hiw-callout .eyebrow {
+            margin-bottom: 12px;
+        }
+
+        .hiw-callout h3 {
+            font-size: 19px;
+            margin: 0 0 12px;
+        }
+
+        .hiw-callout p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* ── CTA ── */
+
+        .hiw-cta {
+            width: min(820px, 92%);
+            margin: 0 auto 120px;
+            text-align: center;
+        }
+
+        .hiw-cta p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 15px;
+            margin-bottom: 24px;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #7c3aed, #9333ea);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+        }
+
+        /* ── RESPONSIVE ── */
+
+        @media (max-width: 650px) {
+            .hiw-intro,
+            .hiw-callout {
+                padding: 28px 22px;
+            }
+
+            .hiw-step {
+                grid-template-columns: 1fr;
+                gap: 20px 0;
+                padding: 28px 22px;
+            }
+
+            .step-number {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+
+        <div class="logo">
+            <span class="logo-mark">✦</span>
+            PEA<span>I</span>
+        </div>
+
+        <nav>
+            <a href="index.html">Discover</a>
+            <a href="how-it-works.html" style="color: white;">How It Works</a>
+        </nav>
+
+    </header>
+
+
+    <main>
+
+        <!-- HERO -->
+        <section class="hiw-hero">
+
+            <p class="eyebrow">UNDER THE HOOD</p>
+
+            <h1>
+                How the <span>recommendation engine</span> works
+            </h1>
+
+            <p>
+                A hybrid ML pipeline that combines semantic embeddings,
+                TF-IDF similarity, and metadata re-ranking to surface
+                movies that genuinely match what you love.
+            </p>
+
+        </section>
+
+
+        <!-- INTRO -->
+        <div class="hiw-intro">
+            <p>
+                When you enter a movie title, the engine first checks whether
+                it exists in the TMDB 5000 training set. If it does, it uses
+                pre-computed <strong style="color: rgba(255,255,255,0.9);">hybrid similarity matrices</strong>
+                for fast, accurate retrieval. If the movie is outside the dataset,
+                it fetches the live TMDB listing, generates a fresh embedding on
+                the fly, and compares it against all 4,803 local movie vectors —
+                so you always get results regardless of the title.
+            </p>
+        </div>
+
+
+        <!-- STEPS -->
+        <div class="hiw-steps">
+
+            <!-- Step 1 -->
+            <div class="hiw-step">
+                <div class="step-number"><span>1</span></div>
+                <div class="step-body">
+                    <h2>Retrieve</h2>
+                    <p>
+                        Two independent models encode every movie and compute
+                        pairwise similarity across the full 4,803-film corpus.
+                        Their outputs are combined into a single
+                        <strong style="color: rgba(255,255,255,0.85);">hybrid score</strong>
+                        that captures both surface-level keyword overlap and
+                        deeper semantic meaning.
+                    </p>
+                    <div class="tag-row">
+                        <span class="step-tag">Sentence Transformers (all-MiniLM-L6-v2)</span>
+                        <span class="step-tag">TF-IDF vectorisation</span>
+                        <span class="step-tag">Cosine similarity</span>
+                        <span class="step-tag">Hybrid fusion</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="hiw-step">
+                <div class="step-number"><span>2</span></div>
+                <div class="step-body">
+                    <h2>Re-rank</h2>
+                    <p>
+                        The top candidates from the retrieval step are scored
+                        on four structured metadata signals. This rewards movies
+                        that share concrete creative DNA with your input, not
+                        just similar descriptions.
+                    </p>
+                    <div class="tag-row">
+                        <span class="step-tag">Genres — 40%</span>
+                        <span class="step-tag">Keywords — 20%</span>
+                        <span class="step-tag">Cast — 20%</span>
+                        <span class="step-tag">Director — 20%</span>
+                    </div>
+                    <p style="margin-top: 16px;">
+                        The final score blends both signals:
+                        <strong style="color: rgba(255,255,255,0.85);">90% hybrid / semantic</strong>
+                        and
+                        <strong style="color: rgba(255,255,255,0.85);">10% metadata</strong>,
+                        keeping recommendations content-driven while still
+                        honouring shared creators and genres.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="hiw-step">
+                <div class="step-number"><span>3</span></div>
+                <div class="step-body">
+                    <h2>Explain</h2>
+                    <p>
+                        Every recommendation card breaks down exactly
+                        <em>why</em> a movie was chosen — not just a score.
+                        You can see which genres, keywords, cast members, and
+                        director it shares with your input, alongside the raw
+                        AI match, hybrid similarity, and metadata percentages.
+                    </p>
+                    <div class="tag-row">
+                        <span class="step-tag">Shared genres</span>
+                        <span class="step-tag">Shared keywords</span>
+                        <span class="step-tag">Shared cast</span>
+                        <span class="step-tag">Same director</span>
+                        <span class="step-tag">AI match %</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- DATASET CALLOUT -->
+        <div class="hiw-callout">
+            <p class="eyebrow">DATASET</p>
+            <h3>TMDB 5000 Movie Dataset</h3>
+            <p>
+                The model is trained on 4,803 films sourced from The Movie Database.
+                Each film is represented as a dense 384-dimensional embedding
+                (Sentence Transformers) and a 5,000-feature TF-IDF vector built
+                from genres, keywords, cast, director, and plot overview.
+                Both representations are pre-computed and stored as NumPy arrays
+                for sub-second retrieval at inference time.
+            </p>
+        </div>
+
+
+        <!-- CTA -->
+        <div class="hiw-cta">
+            <p>Ready to find your next favourite film?</p>
+            <a href="index.html" class="cta-button">
+                <span>Start discovering</span>
+                <span>→</span>
+            </a>
+        </div>
+
+    </main>
+
+
+    <footer>
+        <p>Personalized Entertainment AI</p>
+        <p>Powered by Machine Learning</p>
+    </footer>
+
+</body>
+
+</html>

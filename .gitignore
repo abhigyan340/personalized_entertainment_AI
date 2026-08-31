@@ -1,0 +1,26 @@
+# Environment
+.env
+.env.local
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Node
+node_modules/
+
+# Large pre-computed similarity matrices (>88 MB — exceed GitHub 100 MB limit)
+# Regenerate these by running the preprocessing notebook
+data/artifacts/hybrid_similarity.npy
+data/artifacts/tfidf_similarity.npy
+data/artifacts/tfidf_normalized.npy
+data/artifacts/semantic_similarity.npy
+data/artifacts/semantic_normalized.npy
+
+# OS
+.DS_Store
+Thumbs.db
