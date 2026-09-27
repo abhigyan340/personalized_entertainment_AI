@@ -3,6 +3,25 @@ const API_BASE =
         ? "http://127.0.0.1:3000"
         : "";
 
+/**
+ * Escape special HTML characters in a string value so it is safe to
+ * interpolate into an innerHTML template literal.
+ * Numbers and booleans are returned as-is (no escaping needed).
+ *
+ * @param {*} value
+ * @returns {string}
+ */
+function _esc(value) {
+    if (value === null || value === undefined) return "";
+    const s = String(value);
+    return s
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
 const movieInput = document.getElementById("movieInput");
 const recommendButton = document.getElementById("recommendButton");
 const searchResults = document.getElementById("searchResults");
@@ -293,7 +312,7 @@ async function loadRecommendations() {
         <div class="empty-state">
             <div class="empty-icon">✦</div>
             <h3>Finding your next movies...</h3>
-            <p>Our AI recommendation engine is analyzing "${movie}".</p>
+            <p>Our AI recommendation engine is analyzing &ldquo;${_esc(movie)}&rdquo;.</p>
         </div>
     `;
 
@@ -332,7 +351,7 @@ async function loadRecommendations() {
             <div class="empty-state">
                 <div class="empty-icon">!</div>
                 <h3>Something went wrong</h3>
-                <p>${error.message}</p>
+                <p>${_esc(error.message)}</p>
             </div>
         `;
     }
@@ -365,29 +384,29 @@ function displayRecommendations(recommendations) {
         const cast = (movie.cast || []).slice(0, 5);
 
         const genresHTML = genres
-            .map((genre) => `<span class="genre-tag">${genre}</span>`)
+            .map((genre) => `<span class="genre-tag">${_esc(genre)}</span>`)
             .join("");
 
         const castHTML = cast
-            .map((actor) => `<span class="cast-name">${actor}</span>`)
+            .map((actor) => `<span class="cast-name">${_esc(actor)}</span>`)
             .join(", ");
 
         const poster = movie.poster_url
-            ? `<img src="${movie.poster_url}" alt="${movie.title}" class="movie-poster-image">`
+            ? `<img src="${_esc(movie.poster_url)}" alt="${_esc(movie.title)}" class="movie-poster-image">`
             : `<div class="poster-placeholder"><span>${index + 1}</span></div>`;
 
         card.innerHTML = `
             <div class="movie-rank">#${index + 1}</div>
             <div class="movie-poster" id="poster-${index}">${poster}</div>
             <div class="movie-info">
-                <h3>${movie.title}</h3>
+                <h3>${_esc(movie.title)}</h3>
                 <div class="movie-meta">
-                    <span>${movie.release_year || "—"}</span>
-                    <span>⭐ ${movie.rating ?? "—"}</span>
-                    <span>${movie.runtime ? movie.runtime + " min" : "—"}</span>
+                    <span>${_esc(movie.release_year || "—")}</span>
+                    <span>⭐ ${_esc(movie.rating ?? "—")}</span>
+                    <span>${movie.runtime ? _esc(movie.runtime) + " min" : "—"}</span>
                 </div>
                 <div class="genre-list">${genresHTML}</div>
-                <p class="movie-overview">${movie.overview || ""}</p>
+                <p class="movie-overview">${_esc(movie.overview || "")}</p>
                 <div class="match-header">
                     <span>AI MATCH</span>
                     <strong>${matchPercentage}%</strong>
@@ -412,7 +431,7 @@ function displayRecommendations(recommendations) {
                 </div>
                 <div class="movie-director">
                     <span class="detail-label">DIRECTOR</span>
-                    <p>${movie.director || "Unknown"}</p>
+                    <p>${_esc(movie.director || "Unknown")}</p>
                 </div>
                 <div class="movie-links">
                     <a
@@ -448,7 +467,9 @@ function displayRecommendations(recommendations) {
     });
 
     // All enrich fetches fire simultaneously
-    Promise.all(enrichPromises).catch(() => {});
+    Promise.all(enrichPromises).catch((err) => {
+        console.warn("Recommendation enrichment failed:", err);
+    });
 }
 
 
@@ -469,7 +490,7 @@ async function enrichCard(index, movie) {
         if (data.poster_url) {
             const posterEl = document.getElementById(`poster-${index}`);
             if (posterEl) {
-                posterEl.innerHTML = `<img src="${data.poster_url}" alt="${movie.title}" class="movie-poster-image">`;
+                posterEl.innerHTML = `<img src="${_esc(data.poster_url)}" alt="${_esc(movie.title)}" class="movie-poster-image">`;
             }
         }
 
@@ -504,9 +525,213 @@ function formatReasons(reasons) {
             (reason) => `
                 <div class="reason-item">
                     <span class="reason-check">✓</span>
-                    <span>${reason}</span>
+                    <span>${_esc(reason)}</span>
                 </div>
             `
         )
         .join("");
+}
+
+
+// ── Semantic search ────────────────────────────────────────────────────────────
+
+const semanticInput   = document.getElementById("semanticInput");
+const semanticButton  = document.getElementById("semanticButton");
+const semanticResults = document.getElementById("semanticResults");
+
+if (semanticInput && semanticButton && semanticResults) {
+
+    semanticButton.addEventListener("click", runSemanticSearch);
+
+    semanticInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            runSemanticSearch();
+        }
+    });
+
+    document.querySelectorAll(".example-semantic").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            semanticInput.value = btn.textContent.trim();
+            runSemanticSearch();
+        });
+    });
+}
+
+
+async function runSemanticSearch() {
+    const query = semanticInput.value.trim();
+
+    if (!query) {
+        semanticInput.focus();
+        return;
+    }
+
+    semanticResults.style.display = "grid";
+    semanticResults.innerHTML = `
+        <div class="empty-state">
+            <div class="empty-icon">✦</div>
+            <h3>Searching...</h3>
+            <p>Finding movies that match &ldquo;${_esc(query)}&rdquo;.</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(API_BASE + "/api/semantic-search", {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ query, n: 10 }),
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            let message = "Search failed.";
+            try { message = JSON.parse(text).error || message; } catch (_) {}
+            throw new Error(message);
+        }
+
+        const data = await response.json();
+        displaySemanticResults(data.results || []);
+
+    } catch (error) {
+        console.error("Semantic search error:", error);
+        semanticResults.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">!</div>
+                <h3>Something went wrong</h3>
+                <p>${_esc(error.message)}</p>
+            </div>
+        `;
+    }
+}
+
+
+function displaySemanticResults(movies) {
+    if (!movies || movies.length === 0) {
+        semanticResults.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">?</div>
+                <h3>No results found</h3>
+                <p>Try a different description.</p>
+            </div>
+        `;
+        return;
+    }
+
+    semanticResults.innerHTML = "";
+
+    const enrichPromises = movies.map((movie, index) => {
+        const card = document.createElement("article");
+        card.className = "movie-card";
+
+        const scorePercent  = Math.round((movie.semantic_score || 0) * 100);
+        const genres        = movie.genres || [];
+        const genresHTML    = genres
+            .map((g) => `<span class="genre-tag">${_esc(g)}</span>`)
+            .join("");
+
+        // Poster placeholder — enrichCard will swap in real poster async
+        const posterHTML = `<div class="poster-placeholder" id="poster-sem-${index}"><span>${index + 1}</span></div>`;
+
+        card.innerHTML = `
+            <div class="movie-rank">#${index + 1}</div>
+            <div class="movie-poster" id="poster-sem-wrap-${index}">${posterHTML}</div>
+            <div class="movie-info">
+                <h3>${_esc(movie.title)}</h3>
+                <div class="movie-meta">
+                    <span>${_esc(movie.release_year || "—")}</span>
+                    <span>⭐ ${_esc(movie.rating ?? "—")}</span>
+                </div>
+                <div class="genre-list">${genresHTML}</div>
+                <p class="movie-overview">${_esc(movie.overview || "")}</p>
+                <div class="match-header">
+                    <span>SEMANTIC MATCH</span>
+                    <strong>${scorePercent}%</strong>
+                </div>
+                <div class="match-bar">
+                    <div class="match-fill" style="width:${scorePercent}%"></div>
+                </div>
+                <p class="semantic-score-note">
+                    Cosine similarity to your query description
+                </p>
+                <div class="movie-links">
+                    <a
+                        id="imdb-sem-link-${index}"
+                        href="https://www.imdb.com/find/?q=${encodeURIComponent(movie.title)}&s=tt"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="movie-link-btn imdb-btn"
+                        title="View on IMDb"
+                    >
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true"><path d="M14.31 9.588v.005c-.077-.048-.227-.07-.42-.07v4.815c.27 0 .44-.057.5-.17.062-.115.095-.4.095-.865V10.6c0-.42-.022-.694-.062-.817a.344.344 0 0 0-.114-.195zM12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zM7.18 16.3H5.5V7.7h1.68V16.3zm4.252 0H9.832v-.522c-.347.405-.73.608-1.145.608-.332 0-.57-.106-.712-.315-.143-.21-.213-.54-.213-.992V9.578h1.597v5.13c0 .207.008.335.025.382.036.098.113.147.226.147.148 0 .3-.075.45-.225V9.578h1.37V16.3zm4.212-.783c0 .44-.05.76-.15.96-.14.285-.4.43-.79.43-.31 0-.617-.13-.92-.39V16.3H13.1V7.7h1.684v2.55c.293-.246.593-.37.9-.37.38 0 .644.148.79.443.103.208.154.54.154.99V15.517zm3.876-3.074h-1.614v.95c0 .454.015.727.042.82.028.09.1.135.21.135.142 0 .232-.057.27-.174.037-.116.056-.4.056-.853v-.36h1.037v.394c0 .47-.014.8-.043.99-.028.19-.11.37-.247.54-.136.17-.32.3-.552.39-.23.09-.5.135-.8.135-.29 0-.556-.04-.793-.12a1.27 1.27 0 0 1-.546-.367 1.4 1.4 0 0 1-.258-.548c-.044-.2-.065-.508-.065-.922v-2.14c0-.455.024-.784.072-.987.047-.204.155-.386.323-.544.168-.157.37-.278.61-.36.237-.083.504-.124.8-.124.302 0 .572.045.81.134.237.09.426.213.564.37.14.156.227.33.264.518.038.19.057.49.057.9v.764z"/></svg>
+                        IMDb
+                    </a>
+                    <a
+                        id="wiki-sem-link-${index}"
+                        href="https://en.wikipedia.org/wiki/${encodeURIComponent(movie.title.replace(/ /g, '_'))}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="movie-link-btn wiki-btn"
+                        title="View on Wikipedia"
+                    >
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true"><path d="M12.09 13.119c-.936 1.932-2.217 4.548-2.853 5.728-.616 1.074-1.127.993-1.688.58-.28-.196-1.333-1.713-1.333-1.713C5.083 17.48 5 14.418 5 13.559c0-4.844 2.37-5.667 4.578-5.667-.022.18-.073 1.3.198 1.867.14.294.418.44.783.44.757 0 1.178-.516 1.38-1.055.105-.29.08-.572.008-.803-.07-.22-.19-.434-.346-.63a.67.67 0 0 1-.15-.5c0-.428.504-.713.965-.713.766 0 2.253.756 2.253 3.713 0 1.48-.252 2.984-.578 4.108zm1.14.636C13.89 11.44 14.33 9.35 14.33 7.94c0-2.917-1.583-4.68-3.714-4.68-.65 0-1.46.217-2.02.652a1.93 1.93 0 0 0-.777 1.578c0 .663.302 1.23.729 1.708.03.033.057.066.08.1.018.03.032.063.044.097.033.09.02.187-.017.27a2.127 2.127 0 0 1-.407.564c-.266.265-.69.62-1.218.62-.69 0-1.17-.487-1.33-1.167C5.58 6.39 5.5 5.63 5.5 4.87 5.5 2.185 7.695 0 12 0s6.5 2.185 6.5 4.87c0 3.73-2.61 7.15-5.27 9.885zm.98 6.245L12 24l-2.21-4h4.42z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+        `;
+
+        semanticResults.appendChild(card);
+
+        // Reuse existing enrichCard logic for poster + IMDb/Wikipedia links —
+        // pass a synthetic movie object with the fields enrichCard expects.
+        const syntheticMovie = {
+            title:        movie.title,
+            tmdb_id:      movie.tmdb_id,
+            release_year: movie.release_year,
+        };
+        return enrichSemanticCard(index, syntheticMovie);
+    });
+
+    Promise.all(enrichPromises).catch((err) => {
+        console.warn("Semantic enrichment failed:", err);
+    });
+}
+
+
+// Async poster + link enrichment for semantic search cards.
+// Mirrors enrichCard() but targets the semantic result DOM ids.
+async function enrichSemanticCard(index, movie) {
+    try {
+        const params = new URLSearchParams({ title: movie.title });
+        if (movie.tmdb_id)      params.set("tmdb_id",      movie.tmdb_id);
+        if (movie.release_year) params.set("release_year", movie.release_year);
+
+        const response = await fetch(API_BASE + "/api/enrich?" + params.toString());
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        // Update poster
+        if (data.poster_url) {
+            const wrapEl = document.getElementById(`poster-sem-wrap-${index}`);
+            if (wrapEl) {
+                wrapEl.innerHTML = `<img src="${_esc(data.poster_url)}" alt="${_esc(movie.title)}" class="movie-poster-image">`;
+            }
+        }
+
+        // Update IMDb link to direct page
+        if (data.imdb_url) {
+            const imdbEl = document.getElementById(`imdb-sem-link-${index}`);
+            if (imdbEl) imdbEl.href = data.imdb_url;
+        }
+
+        // Update Wikipedia link to direct article
+        if (data.wikipedia_url) {
+            const wikiEl = document.getElementById(`wiki-sem-link-${index}`);
+            if (wikiEl) wikiEl.href = data.wikipedia_url;
+        }
+    } catch (_) {
+        // silently skip — placeholder/fallbacks remain
+    }
 }

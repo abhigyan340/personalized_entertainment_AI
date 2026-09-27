@@ -1652,3 +1652,57 @@ footer {
     background-size: 600px 100%;
     animation: shimmer 1.6s infinite linear;
 }
+
+/* =========================================================
+   SEMANTIC SEARCH SECTION
+   ========================================================= */
+
+.semantic-section {
+    width: min(1400px, 92%);
+    margin: 0 auto;
+    padding: 60px 0 120px;
+    text-align: center;
+}
+
+.semantic-heading {
+    font-size: clamp(32px, 4.5vw, 52px);
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+    margin-bottom: 16px;
+}
+
+.semantic-subtext {
+    max-width: 580px;
+    margin: 0 auto 35px;
+    color: #a1a1aa;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.example-semantic {
+    background: none;
+    border: none;
+    color: #9a7cff;
+    cursor: pointer;
+    margin-left: 8px;
+    font-size: 13px;
+    transition: color 0.2s ease;
+}
+
+.example-semantic:hover {
+    text-decoration: underline;
+    color: #c084fc;
+}
+
+.semantic-results-grid {
+    margin-top: 50px;
+    text-align: left;
+}
+
+.semantic-score-note {
+    font-size: 11px;
+    color: #71717a;
+    margin-top: -12px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}

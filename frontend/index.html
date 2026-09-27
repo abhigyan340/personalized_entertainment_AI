@@ -21,6 +21,7 @@
 
         <nav>
             <a href="#discover">Discover</a>
+            <a href="#semantic">Semantic Search</a>
             <a href="how-it-works.html">How It Works</a>
         </nav>
 
@@ -81,6 +82,56 @@
                     <button class="example-movie">The Dark Knight</button>
                     <button class="example-movie">The Hangover</button>
                 </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SEMANTIC SEARCH ──────────────────────────────────── -->
+
+        <section class="semantic-section" id="semantic">
+
+            <div class="semantic-inner">
+
+                <p class="eyebrow">NATURAL-LANGUAGE SEARCH</p>
+
+                <h2 class="semantic-heading">
+                    Describe the movie<br>you're looking for
+                </h2>
+
+                <p class="semantic-subtext">
+                    Search by plot, theme, or mood — not just titles.
+                    Powered by semantic embeddings.
+                </p>
+
+                <div class="search-wrap">
+                    <div class="search-container semantic-search-container">
+                        <input
+                            type="text"
+                            id="semanticInput"
+                            placeholder="e.g. dark psychological thriller about a detective..."
+                            autocomplete="off"
+                        >
+                        <button id="semanticButton">
+                            <span>Search</span>
+                            <span class="arrow">→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="example-text">
+                    Try:
+                    <button class="example-semantic">space exploration alien planet</button>
+                    <button class="example-semantic">superhero vigilante dark city</button>
+                    <button class="example-semantic">detective investigating a murder</button>
+                </div>
+
+                <div
+                    id="semanticResults"
+                    class="results-grid semantic-results-grid"
+                    style="display:none;"
+                ></div>
 
             </div>
 

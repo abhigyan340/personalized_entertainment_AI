@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "dataset": "TMDB 5000 Movie Dataset",
+    "catalog_size": 4803,
+    "n_queries": 100,
+    "random_seed": 42,
+    "k_values": [
+      5,
+      10
+    ],
+    "run_date": "2026-09-25T21:16:40.412726"
+  },
+  "ablation_results": [
+    {
+      "label": "TF-IDF only",
+      "tfidf_w": 1.0,
+      "semantic_w": 0.0,
+      "meta_w": 0.0,
+      "coverage": 0.058922,
+      "diversity": 0.338897,
+      "precision_at_5": 0.252,
+      "ndcg_at_5": 0.272618,
+      "precision_at_10": 0.213,
+      "ndcg_at_10": 0.238628
+    },
+    {
+      "label": "Semantic only",
+      "tfidf_w": 0.0,
+      "semantic_w": 1.0,
+      "meta_w": 0.0,
+      "coverage": 0.173017,
+      "diversity": 0.266005,
+      "precision_at_5": 0.42,
+      "ndcg_at_5": 0.444651,
+      "precision_at_10": 0.374,
+      "ndcg_at_10": 0.405196
+    },
+    {
+      "label": "Hybrid 25/75",
+      "tfidf_w": 0.25,
+      "semantic_w": 0.75,
+      "meta_w": 0.0,
+      "coverage": 0.164481,
+      "diversity": 0.249347,
+      "precision_at_5": 0.478,
+      "ndcg_at_5": 0.49884,
+      "precision_at_10": 0.402,
+      "ndcg_at_10": 0.438896
+    },
+    {
+      "label": "Hybrid 50/50",
+      "tfidf_w": 0.5,
+      "semantic_w": 0.5,
+      "meta_w": 0.0,
+      "coverage": 0.141995,
+      "diversity": 0.246171,
+      "precision_at_5": 0.448,
+      "ndcg_at_5": 0.480771,
+      "precision_at_10": 0.396,
+      "ndcg_at_10": 0.434396
+    },
+    {
+      "label": "Hybrid 75/25",
+      "tfidf_w": 0.75,
+      "semantic_w": 0.25,
+      "meta_w": 0.0,
+      "coverage": 0.105767,
+      "diversity": 0.2583,
+      "precision_at_5": 0.4,
+      "ndcg_at_5": 0.431082,
+      "precision_at_10": 0.355,
+      "ndcg_at_10": 0.390486
+    },
+    {
+      "label": "Hybrid 50/50 + Meta",
+      "tfidf_w": 0.5,
+      "semantic_w": 0.5,
+      "meta_w": 0.1,
+      "coverage": 0.142827,
+      "diversity": 0.243691,
+      "precision_at_5": 0.654,
+      "ndcg_at_5": 0.675555,
+      "precision_at_10": 0.589,
+      "ndcg_at_10": 0.623733
+    },
+    {
+      "label": "Production (50/50+10%)",
+      "tfidf_w": 0.5,
+      "semantic_w": 0.5,
+      "meta_w": 0.1,
+      "coverage": 0.142827,
+      "diversity": 0.243691,
+      "precision_at_5": 0.654,
+      "ndcg_at_5": 0.675555,
+      "precision_at_10": 0.589,
+      "ndcg_at_10": 0.623733
+    }
+  ]
+}

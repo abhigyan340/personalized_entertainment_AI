@@ -1,0 +1,823 @@
+{
+  "meta": {
+    "dataset": "TMDB 5000 Movie Dataset",
+    "catalog_size": 4803,
+    "n_queries": 100,
+    "embedding_model": "all-MiniLM-L6-v2",
+    "random_seed": 42,
+    "k_values": [
+      5,
+      10
+    ],
+    "relevance_threshold": 0.2,
+    "proxy_weights": {
+      "genre": 0.2,
+      "keyword": 0.55,
+      "cast": 0.2,
+      "director": 0.05
+    },
+    "n_recommendations": 10,
+    "run_date": "2026-09-25T21:16:40.412700",
+    "data_leakage_note": "Proxy relevance uses genre/keyword/cast/director metadata \u2014 the same features used by the recommender. This evaluation measures metadata consistency, not human preference."
+  },
+  "baseline_results": [
+    {
+      "n_queries": 100,
+      "mean_relevant_set_size": 457.2,
+      "coverage": 0.188007,
+      "diversity": 0.39105,
+      "precision_at_5": 0.086,
+      "ndcg_at_5": 0.087374,
+      "precision_at_10": 0.091,
+      "ndcg_at_10": 0.090394,
+      "name": "Random"
+    },
+    {
+      "n_queries": 100,
+      "mean_relevant_set_size": 457.2,
+      "coverage": 0.072038,
+      "diversity": 0.340223,
+      "precision_at_5": 0.988,
+      "ndcg_at_5": 0.991638,
+      "precision_at_10": 0.966,
+      "ndcg_at_10": 0.979959,
+      "name": "Genre-only"
+    },
+    {
+      "n_queries": 100,
+      "mean_relevant_set_size": 457.2,
+      "coverage": 0.058922,
+      "diversity": 0.338897,
+      "precision_at_5": 0.252,
+      "ndcg_at_5": 0.272618,
+      "precision_at_10": 0.213,
+      "ndcg_at_10": 0.238628,
+      "name": "TF-IDF only"
+    },
+    {
+      "n_queries": 100,
+      "mean_relevant_set_size": 457.2,
+      "coverage": 0.173017,
+      "diversity": 0.266005,
+      "precision_at_5": 0.42,
+      "ndcg_at_5": 0.444651,
+      "precision_at_10": 0.374,
+      "ndcg_at_10": 0.405196,
+      "name": "Semantic only"
+    },
+    {
+      "n_queries": 100,
+      "mean_relevant_set_size": 457.2,
+      "coverage": 0.141995,
+      "diversity": 0.246171,
+      "precision_at_5": 0.448,
+      "ndcg_at_5": 0.480771,
+      "precision_at_10": 0.396,
+      "ndcg_at_10": 0.434396,
+      "name": "Hybrid 0.50/0.50 (no meta)"
+    },
+    {
+      "n_queries": 100,
+      "mean_relevant_set_size": 457.2,
+      "coverage": 0.142827,
+      "diversity": 0.243691,
+      "precision_at_5": 0.654,
+      "ndcg_at_5": 0.675555,
+      "precision_at_10": 0.589,
+      "ndcg_at_10": 0.623733,
+      "name": "Hybrid 0.50/0.50 + Meta 10%"
+    }
+  ],
+  "failure_cases": [
+    {
+      "seed_title": "The Perfect Host",
+      "seed_idx": 4391,
+      "precision_at_5": 0.0,
+      "relevant_set_size": 54,
+      "recommendations": [
+        {
+          "seed_title": "The Perfect Host",
+          "candidate_title": "Survivor",
+          "tfidf_score": 0.411942,
+          "semantic_score": 0.529552,
+          "genre_score": 0.333333,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.133333,
+          "hybrid_50_50": 0.470747,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "The Perfect Host",
+          "candidate_title": "Hot Pursuit",
+          "tfidf_score": 0.403428,
+          "semantic_score": 0.494387,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.448907,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "The Perfect Host",
+          "candidate_title": "Easy Money",
+          "tfidf_score": 0.386869,
+          "semantic_score": 0.502999,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.444934,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "The Perfect Host",
+          "candidate_title": "Tales from the Crypt: Demon Knight",
+          "tfidf_score": 0.390331,
+          "semantic_score": 0.495186,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.442759,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "The Perfect Host",
+          "candidate_title": "Lock, Stock and Two Smoking Barrels",
+          "tfidf_score": 0.4123,
+          "semantic_score": 0.466651,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.439476,
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "seed_title": "Bless the Child",
+      "seed_idx": 1236,
+      "precision_at_5": 0.0,
+      "relevant_set_size": 15,
+      "recommendations": [
+        {
+          "seed_title": "Bless the Child",
+          "candidate_title": "The Skeleton Twins",
+          "tfidf_score": 0.470042,
+          "semantic_score": 0.577087,
+          "genre_score": 0.25,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.1,
+          "hybrid_50_50": 0.523565,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Bless the Child",
+          "candidate_title": "Hanging Up",
+          "tfidf_score": 0.498204,
+          "semantic_score": 0.520773,
+          "genre_score": 0.25,
+          "keyword_score": 0.2,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.14,
+          "hybrid_50_50": 0.509488,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Bless the Child",
+          "candidate_title": "Deadfall",
+          "tfidf_score": 0.528848,
+          "semantic_score": 0.448202,
+          "genre_score": 0.75,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.3,
+          "hybrid_50_50": 0.488525,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Bless the Child",
+          "candidate_title": "Changeling",
+          "tfidf_score": 0.521957,
+          "semantic_score": 0.471221,
+          "genre_score": 0.5,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.2,
+          "hybrid_50_50": 0.496589,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Bless the Child",
+          "candidate_title": "Stoker",
+          "tfidf_score": 0.474476,
+          "semantic_score": 0.476072,
+          "genre_score": 0.75,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.3,
+          "hybrid_50_50": 0.475274,
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "seed_title": "West Side Story",
+      "seed_idx": 3450,
+      "precision_at_5": 0.0,
+      "relevant_set_size": 8,
+      "recommendations": [
+        {
+          "seed_title": "West Side Story",
+          "candidate_title": "Dead Man Down",
+          "tfidf_score": 0.777137,
+          "semantic_score": 0.442226,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.609681,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "West Side Story",
+          "candidate_title": "Step Up 3D",
+          "tfidf_score": 0.706797,
+          "semantic_score": 0.53918,
+          "genre_score": 0.333333,
+          "keyword_score": 0.047619,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.142857,
+          "hybrid_50_50": 0.622988,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "West Side Story",
+          "candidate_title": "August Rush",
+          "tfidf_score": 0.785462,
+          "semantic_score": 0.454149,
+          "genre_score": 0.333333,
+          "keyword_score": 0.095238,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.152381,
+          "hybrid_50_50": 0.619806,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "West Side Story",
+          "candidate_title": "Once Upon a Time in America",
+          "tfidf_score": 0.739501,
+          "semantic_score": 0.468158,
+          "genre_score": 0.666667,
+          "keyword_score": 0.047619,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.27619,
+          "hybrid_50_50": 0.60383,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "West Side Story",
+          "candidate_title": "Crazy/Beautiful",
+          "tfidf_score": 0.678242,
+          "semantic_score": 0.549988,
+          "genre_score": 0.333333,
+          "keyword_score": 0.047619,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.142857,
+          "hybrid_50_50": 0.614115,
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "seed_title": "Michael Clayton",
+      "seed_idx": 2061,
+      "precision_at_5": 0.0,
+      "relevant_set_size": 63,
+      "recommendations": [
+        {
+          "seed_title": "Michael Clayton",
+          "candidate_title": "The Lincoln Lawyer",
+          "tfidf_score": 0.639752,
+          "semantic_score": 0.5831,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.611426,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Michael Clayton",
+          "candidate_title": "Duplicity",
+          "tfidf_score": 0.676904,
+          "semantic_score": 0.456336,
+          "genre_score": 0.333333,
+          "keyword_score": 0.0,
+          "cast_score": 0.2,
+          "director_score": 1.0,
+          "metadata_score": 0.373333,
+          "hybrid_50_50": 0.56662,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Michael Clayton",
+          "candidate_title": "Philadelphia",
+          "tfidf_score": 0.693732,
+          "semantic_score": 0.481819,
+          "genre_score": 0.333333,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.133333,
+          "hybrid_50_50": 0.587776,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Michael Clayton",
+          "candidate_title": "The Firm",
+          "tfidf_score": 0.621528,
+          "semantic_score": 0.517696,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.569612,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Michael Clayton",
+          "candidate_title": "The International",
+          "tfidf_score": 0.65651,
+          "semantic_score": 0.47712,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.566815,
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "seed_title": "Severance",
+      "seed_idx": 3108,
+      "precision_at_5": 0.0,
+      "relevant_set_size": 27,
+      "recommendations": [
+        {
+          "seed_title": "Severance",
+          "candidate_title": "Bait",
+          "tfidf_score": 0.553972,
+          "semantic_score": 0.493077,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.523525,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Severance",
+          "candidate_title": "Jaws 2",
+          "tfidf_score": 0.500358,
+          "semantic_score": 0.519392,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.509875,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Severance",
+          "candidate_title": "Shark Night",
+          "tfidf_score": 0.488152,
+          "semantic_score": 0.505915,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.497033,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Severance",
+          "candidate_title": "Sharknado",
+          "tfidf_score": 0.492283,
+          "semantic_score": 0.527864,
+          "genre_score": 0.333333,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.133333,
+          "hybrid_50_50": 0.510073,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Severance",
+          "candidate_title": "Hatchet",
+          "tfidf_score": 0.495549,
+          "semantic_score": 0.493589,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.494569,
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "seed_title": "Beyond Borders",
+      "seed_idx": 785,
+      "precision_at_5": 0.0,
+      "relevant_set_size": 10,
+      "recommendations": [
+        {
+          "seed_title": "Beyond Borders",
+          "candidate_title": "Jupiter Ascending",
+          "tfidf_score": 0.830904,
+          "semantic_score": 0.472737,
+          "genre_score": 0.25,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.1,
+          "hybrid_50_50": 0.651821,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Beyond Borders",
+          "candidate_title": "Babel",
+          "tfidf_score": 0.775952,
+          "semantic_score": 0.431981,
+          "genre_score": 0.25,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.1,
+          "hybrid_50_50": 0.603966,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Beyond Borders",
+          "candidate_title": "LOL",
+          "tfidf_score": 0.785155,
+          "semantic_score": 0.389472,
+          "genre_score": 0.5,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.2,
+          "hybrid_50_50": 0.587313,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Beyond Borders",
+          "candidate_title": "Contact",
+          "tfidf_score": 0.817181,
+          "semantic_score": 0.378389,
+          "genre_score": 0.25,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.1,
+          "hybrid_50_50": 0.597785,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Beyond Borders",
+          "candidate_title": "Sex and the City 2",
+          "tfidf_score": 0.760519,
+          "semantic_score": 0.409704,
+          "genre_score": 0.5,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.2,
+          "hybrid_50_50": 0.585112,
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "seed_title": "Sgt. Bilko",
+      "seed_idx": 1301,
+      "precision_at_5": 0.2,
+      "relevant_set_size": 310,
+      "recommendations": [
+        {
+          "seed_title": "Sgt. Bilko",
+          "candidate_title": "Stripes",
+          "tfidf_score": 0.530157,
+          "semantic_score": 0.512368,
+          "genre_score": 0.5,
+          "keyword_score": 0.5,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.3,
+          "hybrid_50_50": 0.521262,
+          "is_relevant": true
+        },
+        {
+          "seed_title": "Sgt. Bilko",
+          "candidate_title": "The Men Who Stare at Goats",
+          "tfidf_score": 0.559644,
+          "semantic_score": 0.454074,
+          "genre_score": 0.5,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.2,
+          "hybrid_50_50": 0.506859,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Sgt. Bilko",
+          "candidate_title": "Sands of Iwo Jima",
+          "tfidf_score": 0.657127,
+          "semantic_score": 0.397709,
+          "genre_score": 0.0,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.0,
+          "hybrid_50_50": 0.527418,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Sgt. Bilko",
+          "candidate_title": "Stop-Loss",
+          "tfidf_score": 0.571753,
+          "semantic_score": 0.453384,
+          "genre_score": 0.0,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.0,
+          "hybrid_50_50": 0.512568,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Sgt. Bilko",
+          "candidate_title": "The Great Raid",
+          "tfidf_score": 0.634952,
+          "semantic_score": 0.37046,
+          "genre_score": 0.0,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.0,
+          "hybrid_50_50": 0.502706,
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "seed_title": "Titanic",
+      "seed_idx": 25,
+      "precision_at_5": 0.2,
+      "relevant_set_size": 46,
+      "recommendations": [
+        {
+          "seed_title": "Titanic",
+          "candidate_title": "K-19: The Widowmaker",
+          "tfidf_score": 0.760429,
+          "semantic_score": 0.409908,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.585168,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Titanic",
+          "candidate_title": "Brooklyn",
+          "tfidf_score": 0.782326,
+          "semantic_score": 0.343202,
+          "genre_score": 0.666667,
+          "keyword_score": 0.052632,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.277193,
+          "hybrid_50_50": 0.562764,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Titanic",
+          "candidate_title": "The Curious Case of Benjamin Button",
+          "tfidf_score": 0.745399,
+          "semantic_score": 0.344469,
+          "genre_score": 1.0,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.4,
+          "hybrid_50_50": 0.544934,
+          "is_relevant": true
+        },
+        {
+          "seed_title": "Titanic",
+          "candidate_title": "Gone with the Wind",
+          "tfidf_score": 0.818032,
+          "semantic_score": 0.301336,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.559684,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Titanic",
+          "candidate_title": "Wild",
+          "tfidf_score": 0.804313,
+          "semantic_score": 0.333608,
+          "genre_score": 0.333333,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.133333,
+          "hybrid_50_50": 0.56896,
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "seed_title": "Dogma",
+      "seed_idx": 3004,
+      "precision_at_5": 0.2,
+      "relevant_set_size": 175,
+      "recommendations": [
+        {
+          "seed_title": "Dogma",
+          "candidate_title": "Red State",
+          "tfidf_score": 0.752564,
+          "semantic_score": 0.397849,
+          "genre_score": 0.0,
+          "keyword_score": 0.333333,
+          "cast_score": 0.0,
+          "director_score": 1.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.575206,
+          "is_relevant": true
+        },
+        {
+          "seed_title": "Dogma",
+          "candidate_title": "Yoga Hosers",
+          "tfidf_score": 0.664163,
+          "semantic_score": 0.417672,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 1.0,
+          "metadata_score": 0.466667,
+          "hybrid_50_50": 0.540918,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Dogma",
+          "candidate_title": "Avatar",
+          "tfidf_score": 0.703974,
+          "semantic_score": 0.383494,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.543734,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Dogma",
+          "candidate_title": "3 Ninjas Kick Back",
+          "tfidf_score": 0.747717,
+          "semantic_score": 0.338158,
+          "genre_score": 0.666667,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.266667,
+          "hybrid_50_50": 0.542938,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "Dogma",
+          "candidate_title": "The Greatest Story Ever Told",
+          "tfidf_score": 0.759518,
+          "semantic_score": 0.370692,
+          "genre_score": 0.0,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.0,
+          "hybrid_50_50": 0.565105,
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "seed_title": "The Lovely Bones",
+      "seed_idx": 327,
+      "precision_at_5": 0.2,
+      "relevant_set_size": 99,
+      "recommendations": [
+        {
+          "seed_title": "The Lovely Bones",
+          "candidate_title": "White Oleander",
+          "tfidf_score": 0.657804,
+          "semantic_score": 0.511695,
+          "genre_score": 0.5,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.2,
+          "hybrid_50_50": 0.58475,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "The Lovely Bones",
+          "candidate_title": "Donnie Darko",
+          "tfidf_score": 0.631023,
+          "semantic_score": 0.493045,
+          "genre_score": 1.0,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.4,
+          "hybrid_50_50": 0.562034,
+          "is_relevant": true
+        },
+        {
+          "seed_title": "The Lovely Bones",
+          "candidate_title": "Now Is Good",
+          "tfidf_score": 0.620029,
+          "semantic_score": 0.544257,
+          "genre_score": 0.5,
+          "keyword_score": 0.076923,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.215385,
+          "hybrid_50_50": 0.582143,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "The Lovely Bones",
+          "candidate_title": "August Rush",
+          "tfidf_score": 0.667762,
+          "semantic_score": 0.458407,
+          "genre_score": 0.5,
+          "keyword_score": 0.0,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.2,
+          "hybrid_50_50": 0.563084,
+          "is_relevant": false
+        },
+        {
+          "seed_title": "The Lovely Bones",
+          "candidate_title": "The Last House on the Left",
+          "tfidf_score": 0.557459,
+          "semantic_score": 0.555997,
+          "genre_score": 0.5,
+          "keyword_score": 0.076923,
+          "cast_score": 0.0,
+          "director_score": 0.0,
+          "metadata_score": 0.215385,
+          "hybrid_50_50": 0.556728,
+          "is_relevant": false
+        }
+      ]
+    }
+  ]
+}
